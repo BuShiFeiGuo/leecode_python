@@ -1,0 +1,17 @@
+"""有效的字母异位词"""
+class Solution:
+    def isAnagram(self, s: str, t: str) -> bool:
+        alphabet = [0] * 26
+        for letter in s:
+            index = (ord(letter) - 97)  # 97-123
+            count = alphabet[index]
+            alphabet[index] = count + 1
+
+        for letter in t:
+            index = (ord(letter) - 97)  # 97-123
+            count = alphabet[index]
+            alphabet[index] = count - 1
+        for count in alphabet:
+            if count != 0:
+                return False
+        return True
