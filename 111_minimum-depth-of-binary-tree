@@ -1,0 +1,38 @@
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def minDepth(self, root: TreeNode) -> int:
+        """
+        leecode 111 : minimum-depth-of-binary-tree
+        给定一个二叉树，找出其最小深度。
+        最小深度是从根节点到最近叶子节点的最短路径上的节点数量。
+        说明：叶子节点是指没有子节点的节点。
+        :param root:
+        :return:
+        """
+        if root is None:
+            return 0
+        queue = []  #空队列
+        step = 1
+        queue.append(root)
+        while len(queue) > 0:
+            # 队列不为空,
+            q_l = len(queue)
+            for i in range(q_l):
+                # 弹出队列首的节点作为当前节点
+                node = queue.pop(0)
+                # 判断是不是叶子节点
+                if node.left is None and node.right is None:
+                    return step
+
+                # 将当前节点的子节点加入队列
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+
+            step = step + 1
