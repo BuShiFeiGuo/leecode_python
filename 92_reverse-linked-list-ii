@@ -1,0 +1,34 @@
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def reverseBetween(self, head: ListNode, m: int, n: int) -> ListNode:
+        """反转m-n之间的部分链表"""
+        # base case
+        if m == 1:
+            return self.reverse_n(head, n)
+        # 前进到起点，触发base case
+        head.next = self.reverseBetween(head.next, m - 1, n - 1)
+        return head
+    
+    def reverse_n(self, head, n):
+        """
+        反转head开头的N个节点
+        :param head:
+        :param n:
+        :return:
+        """
+        if n == 1:
+            # 记录第n+1个节点
+            self.successor = head.next
+            return head
+        # 以 head.next 为起点，需要反转前n-1个节点
+        # for i in range(n):
+        last = self.reverse_n(head.next, n - 1)
+        head.next.next = head
+        # head变成最后一个节点，链表末尾指向第n+1个节点
+        head.next = self.successor
+        return last
