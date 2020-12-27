@@ -1,0 +1,34 @@
+import sys
+dirs = [[0,1], [1, 0], [0, -1], [-1, 0]]
+class Solution:
+
+    def longestIncreasingPath(self, matrix: List[List[int]]) -> int:
+        """
+        记忆化深度优先搜索算法
+        :return: 
+        """
+        if len(matrix) == 0:
+            return 0
+        m = len(matrix)  # 行
+        n = len(matrix[0])  # 列
+
+        def dfs(matrix, i, j, cache):
+            if cache[i][j] != 0:
+                return cache[i][j]
+            for d in dirs:
+                # x, y 向上、下、左、右走一步
+                x = i + d[0]
+                y = j + d[1]
+                if (x >= 0 and x < m and y >= 0 and y < n and matrix[x][y] >
+                        matrix[i][j]):
+                    cache[i][j] = max(cache[i][j], dfs(matrix, x, y, cache))
+            cache[i][j] = cache[i][j] + 1  # 最短为1，是因为起始节点
+            return cache[i][j]
+
+        cache = [[0] * n for _ in range(m)]
+        ans = 0
+        for i in range(m):
+            for j in range(n):
+                ans = max(ans, dfs(matrix, i, j, cache))
+
+        return ans
