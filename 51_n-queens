@@ -1,0 +1,70 @@
+import copy
+class Solution:
+    def solveNQueens(self, n: int) -> List[List[str]]:
+        """
+        N皇后问题，回溯问题，Leecode 51
+        :param n:
+        :return:
+        """
+        results = []
+        num_size = n  # 选择范围
+
+        # 路径 棋盘中小于 row 的行都已经成功放置了皇后
+        # 选择列表 第 row 行的所有列都是放置皇后的选择
+        # 结束条件 row 超过棋盘的最后一行
+        def queens(board, row):
+            if row == len(board):
+                # 超过最后一行了
+                # 二维数组不能使用 board[:] 进行深拷贝，里面的list还是同一个对象的引用
+                new_board = copy.deepcopy(board)
+                results.append(new_board)
+                return
+            nn = len(board[row])
+            for col in range(nn):
+                # 排除不合法
+                if not is_valid(board, row, col):
+                    continue
+                # 做选择
+                board[row][col] = 'Q'
+                # 下一层决策
+                queens(board, row + 1)
+                # 撤销选择
+                board[row][col] = '.'
+
+        def is_valid(board, row, col):
+            """
+            是否可以在board[row][col]放置皇后
+            :param board:
+            :param row:
+            :param col:
+            :return:
+            """
+            nn = len(board)
+            # 列有冲突
+            for i in range(row):  # row  nn 
+                if board[i][col] == 'Q':
+                    return False
+            # 右上方有冲突
+            for i, j in zip(range(row - 1, -1, -1), range(col + 1, nn)):
+                if board[i][j] == 'Q':
+                    return False
+
+            # 左上方有冲突
+            # 注意python中的多变量 for 循环，range的递减
+            for i, j in zip(range(row-1, -1, -1), range(col-1, -1, -1)):
+                if board[i][j] == 'Q':
+                    return False
+            return True
+
+
+        # 初始化空棋盘，都是.
+        n_board = [['.'] * num_size for i in range(num_size)]
+        queens(n_board, 0)
+        new_result = []
+        for b in results:
+            new_b = []
+            for l in b:
+                ss = "".join(l)
+                new_b.append(ss)
+            new_result.append(new_b)
+        return new_result
