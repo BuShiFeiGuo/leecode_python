@@ -1,0 +1,58 @@
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+
+class Solution:
+    def reverseKGroup(self, head: ListNode, k: int) -> ListNode:
+        #     dummy = ListNode(0)
+        #     p = dummy
+        #     while True:
+        #         count = k
+        #         stack = []
+        #         tmp = head
+        #         while count and tmp:
+        #             stack.append(tmp)
+        #             tmp = tmp.next
+        #             count -= 1
+        #         # 目前 tmp 所在 K+1 位置，说明剩下链表不足K个，跳出循环
+        #         if count:
+        #             p.next = head
+        #             break
+        #         # 翻转
+        #         while stack:
+        #             p.next = stack.pop()
+        #             p = p.next
+        #         # 与剩下的链表链接起来
+        #         p.next = tmp
+        #         head = tmp
+        #     return dummy.next
+        """K个一组反转链表， Leecode 25 """
+        if head is None:
+            return None
+        # [start, end)区间包含K个待反转的元素
+        start = end = head
+        for i in range(k):
+            if end is None:
+                # 不足K个，不需要反转
+                return head
+            end = end.next
+        # 反转前k个元素
+        new_head = self.reverse_between2(start, end)
+        # 递归反转后续链表并连接起来
+        start.next = self.reverseKGroup(end, k)
+        return new_head
+
+    def reverse_between2(self, start, end):
+        """反转 start 开头到end结尾的链表，左闭右开"""
+        pre = None
+        cur = start
+        nxt = start
+        while cur != end:
+            nxt = cur.next
+            cur.next = pre
+            pre = cur
+            cur = nxt
+        return pre
