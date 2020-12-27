@@ -1,0 +1,26 @@
+"""全排列"""
+class Solution:
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        path_list = []  # A n n
+        nums_size = len(nums)
+
+        def trace(path, choices):
+            if len(path) == nums_size:
+                # 触发结束条件，加入一条路径
+                newpath = path[:]
+                path_list.append(newpath)
+                return
+
+            for choice in choices:
+                if choice in path:
+                    # 不合法选择
+                    continue
+                # 选择，目的是到下一层级的遍历不包含当前的选择项
+                path.append(choice)
+                trace(path, choices)
+                # 撤销选择，实际上就是回溯
+                path.pop()
+
+        path = []
+        trace(path, nums)
+        return path_list
