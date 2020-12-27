@@ -1,0 +1,41 @@
+from typing import List
+
+
+class TreeNode:
+    def __init__(self, val=0, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+"""
+二叉树的框架
+void traverse(TreeNode root) {
+    // 前序遍历
+    traverse(root.left)
+    // 中序遍历
+    traverse(root.right)
+    // 后序遍历
+}
+"""
+
+class Solution:
+    def constructMaximumBinaryTree(self, nums: List[int]) -> TreeNode:
+        """Leecode 654 最大二叉树,
+         根节点最大，左子树是根节点左边元素构成的，右子树是根节点右边元素构成的
+         """
+
+        def max_tree(numbers):
+            if not numbers:
+                return None
+
+            # 找到数组中最大值的索引（没有重复元素）
+            idx = numbers.index(max(numbers))
+            left = numbers[:idx]
+            right = numbers[idx+1:]
+            # 递归调用构造左右子树
+            left_n = max_tree(left)
+            right_n = max_tree(right)
+            node = TreeNode(val=numbers[idx], left=left_n, right=right_n)
+            return node
+
+        return max_tree(nums)
