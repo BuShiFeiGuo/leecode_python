@@ -1,0 +1,50 @@
+from collections import defaultdict as dt
+
+class Solution:
+    def findWords(self, board: List[List[str]], words: List[str]) -> List[str]:
+        """
+
+        :param board: 二维字符网格
+        :param words:字典
+        :return:
+        """
+        # 初始化 行 列
+        m, n = len(board), len(board[0])
+        # 根据words 创建trie 树，根据官方的骚方法
+        Tree = lambda: dt(Tree)
+        tree = Tree()
+        # reduce(function, iterable[, initializer])
+        for w in words: reduce(dict.__getitem__, w+"#", tree)
+        # 初始化返回的list和方向
+        ret = []
+        directions = [[0,1],[0,-1],[1,0],[-1,0]]
+        # 深度搜索
+        def dfs_search(used, x, y, dic, now):
+            if "#" in dic: # 末尾字符，即 包含"#"字符
+                ret.append(now) #结算
+                del dic["#"]
+
+            used.add((x, y))  # 记录已经访问过 board上的位置，避免这一次重复访问
+            for direct in directions:
+                # 四个方向
+                new_x = x + direct[0]
+                new_y = y + direct[1]
+                # 方向满足条件
+                if 0 <= new_x < m and 0 <= new_y < n and (new_x, new_y) not in used:
+                    # 检查新value是否在dic中
+                    next_val = board[new_x][new_y]
+                    if next_val in dic:
+                        # 保存这个value，然后进入到对应这个value的字典
+                        dfs_search(used, new_x, new_y, dic[next_val], now+next_val)
+                        # 妙处，如果里面没东西了，例如"#":{}已经被删除了，那么它就没作用了
+                        if not dic[next_val]: del dic[next_val]
+            used.remove((x, y))
+
+        # 从每个节点开始
+        for i in range(m):
+            for j in range(n):
+                curr_val = board[i][j]
+                if curr_val in tree:
+                    dfs_search(set(), i, j, tree[curr_val], curr_val)
+                    if not tree[curr_val]: del tree[curr_val]
+        return ret
