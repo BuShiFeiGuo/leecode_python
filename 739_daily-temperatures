@@ -1,0 +1,12 @@
+class Solution:
+    def dailyTemperatures(self, T: List[int]) -> List[int]:
+        length = len(T)
+        days = [0] * length
+        stacks = []
+        for i in range(length):
+            temperature = T[i]
+            while stacks and temperature > T[stacks[-1]]:
+                pre_index = stacks.pop()
+                days[pre_index] = i - pre_index
+            stacks.append(i)
+        return days
