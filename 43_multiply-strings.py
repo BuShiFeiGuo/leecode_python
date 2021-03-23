@@ -23,7 +23,7 @@ class Solution:
                 idx = i + j + 1
                 # 十位
                 idx2 = i + j
-                # 先相加，再进位
+                # 先相加，再进位（如果分开处理个位 和十位会有问题）
                 temp += result[idx]
                 result[idx] = temp % 10  # 个位直接取余
                 # 十位要加到现有十位上，小于10的时候，除法结果是0
