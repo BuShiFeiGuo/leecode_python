@@ -1,0 +1,98 @@
+"""
+给你一个字符串 s 、一个字符串 t 。返回 s 中涵盖 t 所有字符的最小子串。如果 s 中不存在涵盖 t 所有字符的子串，则返回空字符串 "" 。
+
+注意：如果 s 中存在这样的子串，我们保证它是唯一的答案。
+
+
+示例 1：
+
+输入：s = "ADOBECODEBANC", t = "ABC"
+输出："BANC"
+示例 2：
+
+输入：s = "a", t = "a"
+输出："a"
+
+# 滑动窗口算法，双指针
+"""
+
+
+class Solution:
+    def minWindow(self, parent: str, son: str) -> str:
+        left = 0
+        right = 0
+        # {char:count}的字典，记录每个char满足的次数，
+        # 由于son中可能存在重复字符，因此需要记录son中每个字符的个数
+        son_dict = self.str2dict(son)
+        # valid 记录窗口中满足的字符的次数，重复满足一个字符，valid算1次，valid=len(son)表示窗口中包含了所有son的字符
+        valid = 0
+        # result 用来记录当前找到的满足条件的长度最小的子串
+        result = ""
+        while right < len(parent):
+            char = parent[right]
+            count = son_dict.get(char)
+            if count is not None:
+                # 是son中的目标字符
+                count -= 1
+                if count >= 0:  # 大于0表示还是目标次数中
+                    valid += 1
+                son_dict[char] = count
+
+            # 判断是否包含子串中的全部字符
+            if valid < len(son):
+                # 不包含，右指针继续往右滑动，增大窗口
+                right += 1
+            else:
+                # 包含，左指针往右滑动，减小窗口
+                while left <= right and valid >= len(son):
+                    char = parent[left]
+                    count = son_dict.get(char)
+                    if count is None:
+                        # 不是目标字符，移动左指针
+                        left += 1
+                    else:
+                        if count >= 0:
+                            # 目标字符出现的次数小于等于所需要的次数
+                            # 不能再移动左指针了
+                            if result == "" or len(result) > right - left + 1:
+                                result = parent[left: right + 1]
+                            if len(result) == len(son):
+                                # 已经是最小长度，直接返回
+                                return result
+                            valid -= 1
+                        left += 1
+                        count += 1
+                        son_dict[char] = count
+                right += 1
+
+        return result
+
+    def str2dict(self, string):
+        str_dict = {}
+        for c in string:
+            if str_dict.get(c) is None:
+                str_dict[c] = 1
+            else:
+                str_dict[c] += 1
+        return str_dict
+
+
+if __name__ == '__main__':
+    solution = Solution()
+    mm = solution.str2dict("aa")
+    a = mm.get('a')
+    b = mm.get('b')
+
+    s = "ADOBECODEBANC"
+    t = "ABC"
+    # BANC
+    print(solution.minWindow(s, t))
+
+    s = "a"
+    t = "a"
+    print(solution.minWindow(s, t))
+
+    s = "aa"
+    t = "aa"
+    print(solution.minWindow(s, t))
+
